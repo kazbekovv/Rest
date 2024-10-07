@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Director(models.Model):
     name = models.CharField(max_length=100)
@@ -17,8 +18,8 @@ class Movie(models.Model):
 
 class Review(models.Model):
     text = models.TextField()
+    stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  # Новое поле stars
     movie = models.ForeignKey(Movie, related_name='reviews', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Review for {self.movie.title}'
-

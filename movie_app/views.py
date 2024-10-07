@@ -13,4 +13,3 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
 class ReviewViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-
