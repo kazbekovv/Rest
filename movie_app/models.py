@@ -18,7 +18,7 @@ class Movie(models.Model):
 
 class Review(models.Model):
     text = models.TextField()
-    stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  # Новое поле stars
+    stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     movie = models.ForeignKey(Movie, related_name='reviews', on_delete=models.CASCADE)
 
     def __str__(self):
