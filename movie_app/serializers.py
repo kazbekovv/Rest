@@ -7,6 +7,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ['id', 'text', 'stars']
 
+    def validate_stars(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Stars must be between 1 and 5.")
+        return value
+
 class MovieSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, required=False)
     rating = serializers.SerializerMethodField()
@@ -18,6 +23,11 @@ class MovieSerializer(serializers.ModelSerializer):
     def get_rating(self, obj):
         average_rating = obj.reviews.aggregate(Avg('stars'))['stars__avg']
         return average_rating if average_rating is not None else 0
+
+    def validate_duration(self, value):
+        if value.total_seconds() <= 0:
+            raise serializers.ValidationError("Duration must be a positive duration.")
+        return value
 
     def create(self, validated_data):
         reviews_data = validated_data.pop('reviews', [])
@@ -54,3 +64,8 @@ class DirectorSerializer(serializers.ModelSerializer):
 
     def get_movies_count(self, obj):
         return obj.movies.count()
+
+    def validate_name(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Name cannot be empty.")
+        return value
