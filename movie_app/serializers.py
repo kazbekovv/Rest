@@ -1,6 +1,19 @@
 from rest_framework import serializers
-from .models import Director, Movie, Review
-from django.db.models import Avg
+from .models import Director, Movie, Review, User
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+class UserConfirmationSerializer(serializers.Serializer):
+    confirmation_code = serializers.CharField(max_length=6)
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

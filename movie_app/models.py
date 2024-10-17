@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import AbstractUser
+import random
 
 class Director(models.Model):
     name = models.CharField(max_length=100)
@@ -23,3 +25,12 @@ class Review(models.Model):
 
     def __str__(self):
         return f'Review for {self.movie.title}'
+
+class User(AbstractUser):
+    is_active = models.BooleanField(default=False)
+    confirmation_code = models.CharField(max_length=6, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.confirmation_code:
+            self.confirmation_code = f"{random.randint(100000, 999999)}"
+        super().save(*args, **kwargs)
