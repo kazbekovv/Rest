@@ -21,14 +21,15 @@ class UserConfirmationView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         code = serializer.validated_data['confirmation_code']
+
         try:
             user = User.objects.get(confirmation_code=code)
             user.is_active = True
             user.confirmation_code = ''
             user.save()
-            return Response({"message": "User confirmed successfully."}, status=status.HTTP_200_OK)
+            return Response({"message": "Пользователь успешно подтверждён."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return Response({"error": "Invalid confirmation code."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Неверный код подтверждения."}, status=status.HTTP_400_BAD_REQUEST)
 
 class DirectorViewSet(viewsets.ModelViewSet):
     queryset = Director.objects.all()
